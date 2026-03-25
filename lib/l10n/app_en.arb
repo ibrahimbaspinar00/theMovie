@@ -1,0 +1,13 @@
+{
+  "@@locale": "en",
+  "appTitle": "The Movie DB",
+  "home": "Home",
+  "favorites": "Favorites",
+  "settings": "Settings",
+  "profile": "Profile",
+  "popular": "Popular",
+  "upcoming": "Upcoming",
+  "topRated": "Top Rated",
+  "noDataInCategory": "No data in this category",
+  "changeLanguage": "Change Language"
+}

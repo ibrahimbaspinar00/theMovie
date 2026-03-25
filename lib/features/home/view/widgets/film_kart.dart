@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../features/home/model/film_model.dart';
+import '../../model/film_model.dart';
 import '../../../../services/favori_service.dart';
 
 class FilmKart extends StatelessWidget {

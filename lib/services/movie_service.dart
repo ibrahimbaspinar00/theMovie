@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../models/film_model.dart';
+import '../features/home/model/film_model.dart';
 
 class MovieService {
   final String apiKey = 'a2d65402fb6a6838bf7eba3f35a2cbe7';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/film_model.dart';
-import '../services/movie_service.dart';
+import '../model/film_model.dart';
+import '../../../services/movie_service.dart';
 
 class FilmViewModel extends ChangeNotifier {
   FilmViewModel({MovieService? movieService})

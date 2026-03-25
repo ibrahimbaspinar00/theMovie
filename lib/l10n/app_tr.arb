@@ -1,0 +1,13 @@
+{
+  "@@locale": "tr",
+  "appTitle": "The Movie DB",
+  "home": "Ana Sayfa",
+  "favorites": "Favoriler",
+  "settings": "Ayarlar",
+  "profile": "Profil",
+  "popular": "Popüler",
+  "upcoming": "Yakında Gelecek",
+  "topRated": "En Çok İzlenenler",
+  "noDataInCategory": "Bu kategoride veri yok",
+  "changeLanguage": "Dili Değiştir"
+}
