@@ -9,5 +9,12 @@
   "upcoming": "Upcoming",
   "topRated": "Top Rated",
   "noDataInCategory": "No data in this category",
-  "changeLanguage": "Change Language"
+  "changeLanguage": "Change Language",
+
+  "theme": "Theme",
+  "themeDescription": "Choose light / dark theme",
+  "language": "Language",
+  "languageDescription": "Switch between Turkish / English",
+  "about": "About",
+  "appInfo": "View app information"
 }

@@ -37,4 +37,22 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get changeLanguage => 'Dili Değiştir';
+
+  @override
+  String get theme => 'Tema';
+
+  @override
+  String get themeDescription => 'Açık / Koyu tema seçimi';
+
+  @override
+  String get language => 'Dil';
+
+  @override
+  String get languageDescription => 'Türkçe / English değiştir';
+
+  @override
+  String get about => 'Hakkında';
+
+  @override
+  String get appInfo => 'Uygulama bilgilerini görüntüle';
 }

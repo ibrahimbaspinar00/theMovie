@@ -37,4 +37,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get changeLanguage => 'Change Language';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get themeDescription => 'Choose light / dark theme';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get languageDescription => 'Switch between Turkish / English';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get appInfo => 'View app information';
 }

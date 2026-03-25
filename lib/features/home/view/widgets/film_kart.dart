@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../model/film_model.dart';
-import '../../../../services/favori_service.dart';
+import 'package:themoviedb/features/home/model/film_model.dart';
+import 'package:themoviedb/services/favori_service.dart';
 
 class FilmKart extends StatelessWidget {
   const FilmKart({super.key, required this.film});
@@ -24,17 +24,23 @@ class FilmKart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final renk = theme.colorScheme;
+    final karanlikMi = theme.brightness == Brightness.dark;
+
     return Container(
       width: 140,
       margin: const EdgeInsets.only(right: 15),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: renk.surface,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
             blurRadius: 10,
-            offset: Offset(0, 4),
-            color: Color(0x14000000),
+            offset: const Offset(0, 4),
+            color: karanlikMi
+                ? Colors.black.withOpacity(0.35)
+                : Colors.black.withOpacity(0.10),
           ),
         ],
       ),
@@ -58,19 +64,24 @@ class FilmKart extends StatelessWidget {
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
                             height: 180,
-                            color: Colors.grey.shade300,
+                            color: renk.surfaceContainerHighest,
                             alignment: Alignment.center,
-                            child: const Icon(Icons.broken_image, size: 40),
+                            child: Icon(
+                              Icons.broken_image,
+                              size: 40,
+                              color: renk.onSurfaceVariant,
+                            ),
                           );
                         },
                       )
                     : Container(
                         height: 180,
-                        color: Colors.grey.shade300,
+                        color: renk.surfaceContainerHighest,
                         alignment: Alignment.center,
-                        child: const Icon(
+                        child: Icon(
                           Icons.movie_creation_outlined,
                           size: 40,
+                          color: renk.onSurfaceVariant,
                         ),
                       ),
               ),
@@ -78,10 +89,11 @@ class FilmKart extends StatelessWidget {
                 top: 4,
                 right: 4,
                 child: Material(
-                  color: Colors.black54,
+                  color: karanlikMi
+                      ? Colors.black.withOpacity(0.45)
+                      : Colors.black.withOpacity(0.30),
                   shape: const CircleBorder(),
                   child: PopupMenuButton<String>(
-                    tooltip: 'Daha Fazla',
                     icon: const Icon(
                       Icons.more_horiz,
                       color: Colors.white,
@@ -89,19 +101,28 @@ class FilmKart extends StatelessWidget {
                     ),
                     onSelected: (value) async {
                       if (value == 'favori') {
-                        final sonuc = await FavoriService().favoriyeEkle(film);
+                        try {
+                          final sonuc = await FavoriService().favoriyeEkle(
+                            film,
+                          );
 
-                        if (!context.mounted) return;
+                          if (!context.mounted) return;
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              sonuc
-                                  ? 'Favorilere eklendi'
-                                  : 'Favoriye eklenemedi',
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                sonuc
+                                    ? 'Favorilere eklendi'
+                                    : 'Favoriye eklenemedi',
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        } catch (e) {
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(SnackBar(content: Text('Hata: $e')));
+                        }
                       }
                     },
                     itemBuilder: (context) => const [
@@ -144,9 +165,10 @@ class FilmKart extends StatelessWidget {
               film.baslik,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
+                color: renk.onSurface,
               ),
             ),
           ),
@@ -155,8 +177,8 @@ class FilmKart extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
               tarihDuzenle(film.cikisTarihi),
-              style: const TextStyle(
-                color: Colors.grey,
+              style: TextStyle(
+                color: renk.onSurface.withOpacity(0.65),
                 fontSize: 12,
               ),
             ),

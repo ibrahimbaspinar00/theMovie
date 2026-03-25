@@ -30,32 +30,43 @@ class _FavorilerSayfasiState extends State<FavorilerSayfasi> {
 
     try {
       final gelenFavoriler = await favoriService.favorileriGetir();
-
+      if (!mounted) return;
       setState(() {
         favoriler = gelenFavoriler;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         hataMesaji = e.toString();
       });
     } finally {
-      setState(() {
-        yukleniyor = false;
-      });
+      if (mounted) {
+        setState(() {
+          yukleniyor = false;
+        });
+      }
     }
   }
 
   Future<void> favoriSil(FilmModel film) async {
-    final silindi = await favoriService.favoridenSil(film.id);
+    try {
+      final silindi = await favoriService.favoridenSil(film.id);
+      if (!mounted) return;
 
-    if (silindi) {
-      setState(() {
-        favoriler.removeWhere((item) => item.id == film.id);
-      });
+      if (silindi) {
+        setState(() {
+          favoriler.removeWhere((item) => item.id == film.id);
+        });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("${film.baslik} favorilerden kaldırıldı")),
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("${film.baslik} favorilerden kaldirildi")),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Silme hatasi: $e")));
     }
   }
 
@@ -76,22 +87,27 @@ class _FavorilerSayfasiState extends State<FavorilerSayfasi> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final renk = theme.colorScheme;
+    final karanlikMi = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Favoriler", style: TextStyle(fontSize: 17)),
-        //centerTitle: true
-      ),
       body: RefreshIndicator(
         onRefresh: favorileriYukle,
         child: yukleniyor
             ? const Center(child: CircularProgressIndicator())
             : hataMesaji.isNotEmpty
-            ? Center(child: Text(hataMesaji))
-            : favoriler.isEmpty
-            ? const Center(
+            ? Center(
                 child: Text(
-                  "Henüz favori film yok",
-                  style: TextStyle(fontSize: 16),
+                  hataMesaji,
+                  style: TextStyle(color: renk.onSurface),
+                ),
+              )
+            : favoriler.isEmpty
+            ? Center(
+                child: Text(
+                  "Henuz favori film yok",
+                  style: TextStyle(fontSize: 16, color: renk.onSurfaceVariant),
                 ),
               )
             : GridView.builder(
@@ -105,16 +121,19 @@ class _FavorilerSayfasiState extends State<FavorilerSayfasi> {
                 ),
                 itemBuilder: (context, index) {
                   final film = favoriler[index];
+                  final filmPuanRengi = puanRengi(film.puan);
 
                   return Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: renk.surface,
                       borderRadius: BorderRadius.circular(16),
-                      boxShadow: const [
+                      boxShadow: [
                         BoxShadow(
-                          color: Colors.black12,
+                          color: karanlikMi
+                              ? Colors.black.withValues(alpha: 0.35)
+                              : Colors.black.withValues(alpha: 0.12),
                           blurRadius: 8,
-                          offset: Offset(0, 3),
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
@@ -132,9 +151,13 @@ class _FavorilerSayfasiState extends State<FavorilerSayfasi> {
                                   width: double.infinity,
                                   child: film.posterYolu.isEmpty
                                       ? Container(
-                                          color: Colors.grey.shade300,
-                                          child: const Center(
-                                            child: Icon(Icons.image, size: 45),
+                                          color: renk.surfaceContainerHighest,
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.image,
+                                              size: 45,
+                                              color: renk.onSurfaceVariant,
+                                            ),
                                           ),
                                         )
                                       : Image.network(
@@ -151,7 +174,11 @@ class _FavorilerSayfasiState extends State<FavorilerSayfasi> {
                                   child: Container(
                                     padding: const EdgeInsets.all(6),
                                     decoration: BoxDecoration(
-                                      color: Colors.black.withOpacity(0.55),
+                                      color: karanlikMi
+                                          ? Colors.black.withValues(alpha: 0.60)
+                                          : Colors.black.withValues(
+                                              alpha: 0.45,
+                                            ),
                                       shape: BoxShape.circle,
                                     ),
                                     child: const Icon(
@@ -174,9 +201,10 @@ class _FavorilerSayfasiState extends State<FavorilerSayfasi> {
                                 film.baslik,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
+                                  color: renk.onSurface,
                                 ),
                               ),
                               const SizedBox(height: 6),
@@ -184,7 +212,7 @@ class _FavorilerSayfasiState extends State<FavorilerSayfasi> {
                                 tarihDuzenle(film.cikisTarihi),
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.grey.shade600,
+                                  color: renk.onSurface.withValues(alpha: 0.70),
                                 ),
                               ),
                               const SizedBox(height: 6),
@@ -194,15 +222,15 @@ class _FavorilerSayfasiState extends State<FavorilerSayfasi> {
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: puanRengi(film.puan).withOpacity(0.12),
+                                  color: filmPuanRengi.withValues(alpha: 0.14),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
-                                  "⭐ ${film.puan.toStringAsFixed(1)}",
+                                  "${film.puan.toStringAsFixed(1)} / 10",
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
-                                    color: puanRengi(film.puan),
+                                    color: filmPuanRengi,
                                   ),
                                 ),
                               ),

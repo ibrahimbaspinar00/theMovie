@@ -23,14 +23,18 @@ class _AnaSayfaState extends State<AnaSayfa> {
     required List<FilmModel> filmler,
     required String bosMesaj,
   }) {
+    final theme = Theme.of(context);
+    final renk = theme.colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           baslik,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 20,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.normal,
+            color: renk.onSurface,
           ),
         ),
         const SizedBox(height: 12),
@@ -40,10 +44,16 @@ class _AnaSayfaState extends State<AnaSayfa> {
             width: double.infinity,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: renk.surface,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text(bosMesaj),
+            child: Text(
+              bosMesaj,
+              style: TextStyle(
+                color: renk.onSurface.withOpacity(0.75),
+                fontSize: 14,
+              ),
+            ),
           )
         else
           SizedBox(
@@ -69,7 +79,12 @@ class _AnaSayfaState extends State<AnaSayfa> {
 
     if (vm.hataMesaji.isNotEmpty) {
       return Center(
-        child: Text(vm.hataMesaji),
+        child: Text(
+          vm.hataMesaji,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
       );
     }
 
@@ -100,6 +115,21 @@ class _AnaSayfaState extends State<AnaSayfa> {
     );
   }
 
+  String appBarBaslik(AppLocalizations dil) {
+    switch (seciliIndex) {
+      case 0:
+        return dil.home;
+      case 1:
+        return dil.favorites;
+      case 2:
+        return dil.settings;
+      case 3:
+        return dil.profile;
+      default:
+        return dil.appTitle;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<FilmViewModel>();
@@ -109,7 +139,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
       anaIcerik(vm, dil),
       const FavorilerSayfasi(),
       const SettingsSayfasi(),
-      const ProfilSayfa(),
+      const ProfilSayfasi(),
     ];
 
     if (seciliIndex >= sayfalar.length) {
@@ -118,7 +148,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(dil.appTitle),
+        title: Text(appBarBaslik(dil)),
         centerTitle: true,
       ),
       body: sayfalar[seciliIndex],

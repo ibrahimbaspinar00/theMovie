@@ -9,5 +9,12 @@
   "upcoming": "Yakında Gelecek",
   "topRated": "En Çok İzlenenler",
   "noDataInCategory": "Bu kategoride veri yok",
-  "changeLanguage": "Dili Değiştir"
+  "changeLanguage": "Dili Değiştir",
+
+  "theme": "Tema",
+  "themeDescription": "Açık / Koyu tema seçimi",
+  "language": "Dil",
+  "languageDescription": "Türkçe / English değiştir",
+  "about": "Hakkında",
+  "appInfo": "Uygulama bilgilerini görüntüle"
 }
